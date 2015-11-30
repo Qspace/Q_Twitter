@@ -2,7 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "reply-action-pressed.png",
+      "filename" : "reply-action-default.png",
       "scale" : "1x"
     },
     {

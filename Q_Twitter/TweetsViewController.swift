@@ -12,17 +12,23 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     
     @IBOutlet weak var tableView: UITableView!
-    
+    var refreshControl: UIRefreshControl?
     var tweets: [Tweet]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
+        navigationController?.navigationBarHidden = false
+        navigationController?.title = "Tweet"
+//        tableView.estimatedRowHeight = 200
+//        tableView.rowHeight = UITableViewAutomaticDimension
+
         TwitClient.sharedInstance.homeTimelineWithParams(nil) { (tweets, error) -> () in
             self.tweets = tweets
             self.tableView.reloadData()
         }
+        pullToRefresh()
     }
     
     override func didReceiveMemoryWarning() {
@@ -37,19 +43,30 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        return tweets?.count ?? 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("TweetCell", forIndexPath: indexPath) as! TweetCell
         if tweets != nil {
             let tweet = tweets![indexPath.row] as Tweet
-            cell.userNameLabel.text = tweet.user?.name
-            print("Q_debug: User",tweet.user?.name)
-            cell.tweetTextView.text = tweet.text
-            cell.profileImage.setImageWithURL(NSURL(string: (tweet.user?.profileImageUrl)!)!)
+            cell.tweet = tweet
         }
         return cell
+    }
+    
+    func pullToRefresh() {
+        self.refreshControl = UIRefreshControl()
+        self.refreshControl!.attributedTitle = NSAttributedString(string: "Pull to refresh Tweets")
+        self.refreshControl!.addTarget(self, action: "refreshData", forControlEvents: UIControlEvents.ValueChanged)
+        self.tableView.addSubview(refreshControl!)
+    }
+    
+    func refreshData() {
+        TwitClient.sharedInstance.homeTimelineWithParams(nil) { (tweets, error) -> () in
+            self.tweets = tweets
+            self.tableView.reloadData()
+        }
     }
     
     
