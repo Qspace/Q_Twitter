@@ -4,8 +4,6 @@ This is a simple Twitter client written in Swift that uses Twitter's [REST APIs]
 
 **Time spent**: 12 hours
 
-I didn't have much free time this past week to work on this assignment. I do feel, however, after implementing the [Yelp App](https://github.com/jerrysu/CodePath-Yelp), that I've got the hang of Auto Layout and storyboarding. The work done on this project seemed straightforward to me and it was much easier to make fast progress.
-
 ### Walkthrough
 
 ![Walkthrough](Q_Twitter.gif)
