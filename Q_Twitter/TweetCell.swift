@@ -22,7 +22,6 @@ class TweetCell: UITableViewCell {
     
     @IBOutlet weak var tweetTimeLabel: UILabel!
     
-    @IBOutlet weak var tweetTextView: UITextView!
     
     @IBOutlet weak var profileImage: UIImageView!
     
@@ -33,9 +32,11 @@ class TweetCell: UITableViewCell {
     @IBOutlet weak var reTweetButton: UIButton!
     
     @IBOutlet weak var likeButton: UIButton!
+
+    @IBOutlet weak var tweetTextLabel: UILabel!
+    
     
     @IBOutlet weak var reTweetViewHeightConstraint: NSLayoutConstraint!
-    
 
     
     
@@ -59,7 +60,7 @@ class TweetCell: UITableViewCell {
         self.profileImage.setImageWithURL(NSURL(string: (newTweet?.user?.profileImageUrl)!)!)
         self.userNameLabel.text = newTweet?.user?.name
         self.userAccountLabel.text = "@\((newTweet?.user?.screenName)!)"
-        self.tweetTextView.text = newTweet?.text
+        self.tweetTextLabel.text = newTweet?.text
         self.tweetTimeLabel.text = TimeUtil.timeAgoSinceDate((newTweet?.createdAt)!, numericDates: true)
     }
     

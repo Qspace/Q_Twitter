@@ -23,7 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Lauch to Login Screen
             print("User: \(User.currentUser?.name)")
             let vc = storyboard.instantiateViewControllerWithIdentifier("TweetsViewController") as UIViewController
-            window?.rootViewController = vc
+//            window?.rootViewController = vc
+            let navcontroller = UINavigationController(rootViewController: vc)
+            window?.rootViewController = navcontroller
         }
         
         return true
