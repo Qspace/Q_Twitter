@@ -80,30 +80,15 @@ class TwitClient: BDBOAuth1RequestOperationManager {
         }
     }
     
-    
-    // MARK: Timeline
-    
-    func homeTimelineWithParams(count: Int?, maxId: NSNumber?, completion: (tweets: [Tweet]?, error: NSError?) -> ()) {
-        
-        var params = [String : AnyObject]()
-        
-        if count != nil {
-            params["count"] = count!
-        }
-        
-        if maxId != nil {
-            params["max_id"] = maxId!
-        }
-        
-        GET("1.1/statuses/home_timeline.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+    func getTweetWithId(id: NSNumber, completion: (tweet: Tweet?, error: NSError?) -> ()) {
+        GET("1.1/statuses/show/\(id).json", parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             
-            let tweets = Tweet.tweetsWithArray(response as! [NSDictionary])
-            completion(tweets: tweets, error: nil)
+            let tweet = response as! Tweet
+            completion(tweet: tweet, error: nil)
             
-            
-            }, failure: {(operation: AFHTTPRequestOperation?, error: NSError) -> Void in
-                print("error getting home timeline with param")
-                completion(tweets: nil, error: error)
+            }, failure: { (operation: AFHTTPRequestOperation?, error: NSError) -> Void in
+                print("error getting retweet id timeline")
+                completion(tweet: nil, error: error)
         })
     }
     
@@ -125,104 +110,42 @@ class TwitClient: BDBOAuth1RequestOperationManager {
         })
     }
     
-    func replyTweet(text: String, originalId: NSNumber, completion: (tweet: Tweet?, error: NSError?) -> ()) {
-        
-        var params = [String : AnyObject]()
-        params["status"] = text
-        params["in_reply_to_status_id"] = originalId
-        
-        POST("1.1/statuses/update.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-            
-            let newTweet = Tweet(dictionary: response as! NSDictionary)
-            completion(tweet: newTweet, error: nil)
-            
-            }, failure: { (operation: AFHTTPRequestOperation?, error: NSError) -> Void in
-                print("error updating new tweet")
-                completion(tweet: nil, error: error)
-        })
-    }
+    // MARK: Like
     
-    // MARK: Favorite
-    
-    func likeTweet(id: NSNumber, completion: (response: AnyObject?, error: NSError?) -> ()) {
+    func likeTweet(id: NSNumber, completion: (tweet: Tweet?, error: NSError?) -> ()) {
         
         var params = [String : AnyObject]()
         params["id"] = id
         
         POST("1.1/favorites/create.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             
-            completion(response: response, error: nil)
+            
+            let tweetDict = response as! NSDictionary
+            let tweet = Tweet(dictionary: tweetDict)
+            completion(tweet: tweet, error: nil)
             
             }, failure: { (operation: AFHTTPRequestOperation?, error: NSError) -> Void in
                 print("error like tweet")
-                completion(response: nil, error: error)
+                completion(tweet: nil, error: error)
         })
     }
     
-    func unLikeTweet(id: NSNumber, completion: (response: AnyObject?, error: NSError?) -> ()) {
-        
-        var params = [String : AnyObject]()
-        params["id"] = id
-        
-        POST("1.1/favorites/destroy.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-            
-            completion(response: response, error: nil)
-            
-            }, failure: { (operation: AFHTTPRequestOperation?, error: NSError) -> Void in
-                print("error unlike tweet")
-                completion(response: nil, error: error)
-        })
-    }
-    
-    func retweet(id: NSNumber, completion: (response: AnyObject?, error: NSError?) -> ()) {
+    func retweet(id: NSNumber, completion: (tweet: Tweet?, error: NSError?) -> ()) {
+        print("Q_debug: call retweet API")
         
         let request = "1.1/statuses/retweet/\(id).json"
         
         POST(request, parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             
-            completion(response: response, error: nil)
+            let tweetDict = response as! NSDictionary
+            let tweet = Tweet(dictionary: tweetDict)
+            completion(tweet: tweet, error: nil)
             
             }, failure: { (operation: AFHTTPRequestOperation?, error: NSError) -> Void in
                 print("error retweeting tweet")
-                completion(response: nil, error: error)
+                completion(tweet: nil, error: error)
         })
     }
-    
-    func getRetweetedId(id: NSNumber, completion: (retweetedId: NSNumber?, error: NSError?) -> ()) {
-        
-        var retweetedId: NSNumber?
-        
-        var params = [String : AnyObject]()
-        params["include_my_retweet"] = true
-        
-        GET("1.1/statuses/show/\(id).json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-            
-            let tweet = response as! NSDictionary
-            let currentUserRetweet = tweet["current_user_retweet"] as! NSDictionary
-            retweetedId = currentUserRetweet["id"] as? NSNumber
-            
-            completion(retweetedId: retweetedId, error: nil)
-            
-            }, failure: { (operation: AFHTTPRequestOperation?, error: NSError) -> Void in
-                print("error getting retweet id timeline")
-                completion(retweetedId: nil, error: error)
-        })
-    }
-    
-    func unRetweet(id: NSNumber, completion: (response: AnyObject?, error: NSError?) -> ()) {
-        
-        let request = "1.1/statuses/destroy/\(id).json"
-        
-        POST(request, parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-            
-            completion(response: response, error: nil)
-            
-            }, failure: { (operation: AFHTTPRequestOperation?, error: NSError) -> Void in
-                print("error unretweet")
-                completion(response: nil, error: error)
-        })
-    }
-
 }
 
 

@@ -23,11 +23,6 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         navigationController?.title = "Tweet"
         tableView.estimatedRowHeight = 300
         tableView.rowHeight = UITableViewAutomaticDimension
-
-        TwitClient.sharedInstance.homeTimelineWithParams(nil) { (tweets, error) -> () in
-            self.tweets = tweets
-            self.tableView.reloadData()
-        }
         pullToRefresh()
     }
     
@@ -38,6 +33,7 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewWillAppear(animated: Bool) {
         navigationController?.navigationBarHidden = false
+        refreshData()
     }
     
     
@@ -59,6 +55,13 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+        let controller = storyboard.instantiateViewControllerWithIdentifier("DetailTweetViewController") as! DetailTweetViewController
+        controller.newTweet = self.tweets![indexPath.row]
+        self.navigationController?.pushViewController(controller, animated: true)
+    }
+    
     func pullToRefresh() {
         self.refreshControl = UIRefreshControl()
         self.refreshControl!.attributedTitle = NSAttributedString(string: "Pull to refresh Tweets")
@@ -67,9 +70,11 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func refreshData() {
+        print("Refresh Data")
         TwitClient.sharedInstance.homeTimelineWithParams(nil) { (tweets, error) -> () in
             self.tweets = tweets
             self.tableView.reloadData()
+            self.refreshControl?.endRefreshing()
         }
     }
     

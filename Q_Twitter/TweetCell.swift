@@ -68,9 +68,12 @@ class TweetCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        
         replyButton.setImage(UIImage(named: "reply-action-default"), forState: .Normal)
         reTweetButton.setImage(UIImage(named: "retweet-action-default"), forState: .Normal)
         likeButton.setImage(UIImage(named: "like-action-default"), forState: .Normal)
+        profileImage.layer.cornerRadius = 9.0 
         
     }
 
@@ -98,15 +101,15 @@ class TweetCell: UITableViewCell {
     }
     
     @IBAction func onReply(sender: AnyObject) {
-        replyButton.setImage(UIImage(named: "reply-action-pressed"), forState: .Normal)
+//        replyButton.setImage(UIImage(named: "reply-action-pressed"), forState: .Normal)
     }
     
     @IBAction func onReTweet(sender: AnyObject) {
-        reTweetButton.setImage(UIImage(named: "retweet-action-pressed"), forState: .Normal)
+//        reTweetButton.setImage(UIImage(named: "retweet-action-pressed"), forState: .Normal)
     }
     
     @IBAction func onLike(sender: AnyObject) {
-        likeButton.setImage(UIImage(named: "like-action-pressed"), forState: .Normal)
+//        likeButton.setImage(UIImage(named: "like-action-pressed"), forState: .Normal)
     }
     
     
