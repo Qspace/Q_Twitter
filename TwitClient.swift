@@ -195,6 +195,7 @@ class TwitClient: BDBOAuth1RequestOperationManager {
     }
     
     func replyStatus(text: String, tweetId: NSNumber, completion: (tweet: Tweet?, error: NSError?) -> ()) {
+        print("Q_debug: replyStatus")
         var params = [String : AnyObject]()
         params["status"] = text
         params["in_reply_to_status_id"] = tweetId

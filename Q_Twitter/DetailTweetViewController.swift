@@ -131,7 +131,10 @@ class DetailTweetViewController: UIViewController {
     
     
     @IBAction func onReply(sender: AnyObject) {
-        
+        let storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+        let controller = storyboard.instantiateViewControllerWithIdentifier("ComposeViewController") as! ComposeViewController
+        controller.replyTweet = self.newTweet
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     @IBAction func onReTweet(sender: AnyObject) {
