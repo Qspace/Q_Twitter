@@ -193,7 +193,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0710;
-				ORGANIZATIONNAME = MAC;
+				ORGANIZATIONNAME = "Sinh Quyen Ngo";
 				TargetAttributes = {
 					04C751761C04AFB200A93768 = {
 						CreatedOnToolsVersion = 7.1;

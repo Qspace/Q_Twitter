@@ -43,6 +43,7 @@ class DetailTweetViewController: UIViewController {
     
     
     var newTweet: Tweet?
+    var originTweet: Tweet?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +54,8 @@ class DetailTweetViewController: UIViewController {
         reTweetButton.imageView?.sizeToFit()
         likeButton.imageView?.sizeToFit()
         profileImage.layer.cornerRadius = 9.0
+        
+        originTweet = newTweet
         
         showDetailView()
         
@@ -133,27 +136,57 @@ class DetailTweetViewController: UIViewController {
     
     @IBAction func onReTweet(sender: AnyObject) {
         print("Q_debug: on retweet")
-//        reTweetButton.setImage(UIImage(named: "retweet-action-pressed"), forState: .Normal)
-        TwitClient.sharedInstance.retweet((newTweet?.id)!) { (tweet, error) -> () in
-            if tweet != nil {
-                self.newTweet = tweet
-                self.showDetailView()
-            } else {
-                print("Error call retweet API",error)
+        
+        if newTweet?.isRetweeted == false {
+            TwitClient.sharedInstance.retweet((newTweet?.id)!) { (tweet, error) -> () in
+                if tweet != nil {
+                    self.newTweet = tweet
+                    self.showDetailView()
+                } else {
+                    print("Error call retweet API",error)
+                }
             }
+        } else {
+            TwitClient.sharedInstance.unretweet((newTweet?.id)!, completion: { (tweet, error) -> () in
+                if tweet != nil {
+                    print("Q_debug: untweet",tweet)
+                    TwitClient.sharedInstance.getTweetWithId((self.originTweet?.id)!) { (tweet, error) -> () in
+                        if tweet != nil {
+                            self.newTweet = tweet
+                            self.showDetailView()
+                        } else {
+                            print("Error call getTweet with ID API",error)
+                        }
+                    }
+                } else {
+                    print("Error call retweet API",error)
+                }
+            })
         }
+     
     }
     
     @IBAction func onLike(sender: AnyObject) {
-//        likeButton.setImage(UIImage(named: "like-action-pressed"), forState: .Normal)
-        TwitClient.sharedInstance.likeTweet((newTweet?.id)!) { (tweet, error) -> () in
-            if tweet != nil {
-                self.newTweet = tweet
-                self.showDetailView()
-            } else {
-                print("Error call like API",error)
+        if newTweet?.isLiked == false {
+            TwitClient.sharedInstance.likeTweet((newTweet?.id)!) { (tweet, error) -> () in
+                if tweet != nil {
+                    self.newTweet = tweet
+                    self.showDetailView()
+                } else {
+                    print("Error call like API",error)
+                }
             }
+        } else {
+            TwitClient.sharedInstance.unlikeTweet((newTweet?.id)!, completion: { (tweet, error) -> () in
+                if tweet != nil {
+                    self.newTweet = tweet
+                    self.showDetailView()
+                } else {
+                    print("Error call unlike API",error)
+                }
+            })
         }
+        
     }
     
 
