@@ -108,6 +108,7 @@
                                 <state key="normal" title="Reply"/>
                                 <connections>
                                     <action selector="onReply:" destination="fcr-PL-gpU" eventType="touchUpInside" id="HOG-Gw-ReF"/>
+                                    <segue destination="r5U-4B-t7E" kind="modal" identifier="ReplyNavigationSegue" id="19f-2s-WIt"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="98q-8o-IBj">
@@ -607,7 +608,7 @@
         <!--Navigation Controller-->
         <scene sceneID="d9C-Di-J28">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="r5U-4B-t7E" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="ComposeNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="r5U-4B-t7E" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="giI-Gk-5JC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -628,5 +629,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="e5K-yg-XHD"/>
+        <segue reference="19f-2s-WIt"/>
     </inferredMetricsTieBreakers>
 </document>

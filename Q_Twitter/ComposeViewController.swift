@@ -65,7 +65,7 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
                         print("error post reply tweet: \(error)")
                         return
                     }
-                    self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+                    self.dismissViewControllerAnimated(true, completion: nil)
                 })
             }
         }

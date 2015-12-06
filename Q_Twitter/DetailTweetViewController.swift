@@ -49,6 +49,8 @@ class DetailTweetViewController: UIViewController {
         super.viewDidLoad()
         
         //set default image and congig image view display
+        
+        print("viewDidLoad")
 
         replyButton.imageView?.sizeToFit()
         reTweetButton.imageView?.sizeToFit()
@@ -129,12 +131,24 @@ class DetailTweetViewController: UIViewController {
         print("View will appear")
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        print("Q_debug: Segue to ComposeViewController")
+        if segue.identifier == "ReplyNavigationSegue"
+        {
+            print("Q_debug: Segue to ComposeViewController")
+            if let destinationVC = segue.destinationViewController as? UINavigationController {
+                let tagetVC = destinationVC.topViewController as! ComposeViewController
+                tagetVC.replyTweet = self.newTweet
+            }
+        }
+    }
+    
     
     @IBAction func onReply(sender: AnyObject) {
-        let storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
-        let controller = storyboard.instantiateViewControllerWithIdentifier("ComposeViewController") as! ComposeViewController
-        controller.replyTweet = self.newTweet
-        self.navigationController?.pushViewController(controller, animated: true)
+//        let storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+//        let controller = storyboard.instantiateViewControllerWithIdentifier("ComposeViewController") as! ComposeViewController
+//        controller.replyTweet = self.newTweet
+//        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     @IBAction func onReTweet(sender: AnyObject) {
