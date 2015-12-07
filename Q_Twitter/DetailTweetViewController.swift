@@ -8,62 +8,83 @@
 
 import UIKit
 
-class DetailTweetViewController: UIViewController {
+class DetailTweetViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet weak var reTweetTopView: UIView!
-    
     @IBOutlet weak var reTweetViewHeight: NSLayoutConstraint!
-    
     @IBOutlet weak var reTweetTopIcon: UIImageView!
     
     @IBOutlet weak var reTweetUserName: UILabel!
-    
     @IBOutlet weak var reTweetedLabel: UILabel!
-    
     @IBOutlet weak var userNameLabel: UILabel!
-    
     @IBOutlet weak var userAccountLabel: UILabel!
-    
     @IBOutlet weak var tweetTextLabel: UILabel!
-    
     @IBOutlet weak var tweetCreateDateLabel: UILabel!
-    
     @IBOutlet weak var likesCntLabel: UILabel!
-    
     @IBOutlet weak var reTweetsCntLabel: UILabel!
-    
     @IBOutlet weak var replyButton: UIButton!
-    
     @IBOutlet weak var reTweetButton: UIButton!
-    
     @IBOutlet weak var likeButton: UIButton!
-    
     @IBOutlet weak var profileImage: UIImageView!
-    
-    
+    @IBOutlet weak var replyCntLabel: UILabel!
+    @IBOutlet weak var replyTextView: UITextView!
+    @IBOutlet weak var replyTexViewBottomConstraint:NSLayoutConstraint!
+    @IBOutlet weak var replyViewBottomConstraint: NSLayoutConstraint!
     
     var newTweet: Tweet?
     var originTweet: Tweet?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //set default image and congig image view display
         
         print("viewDidLoad")
-
+        
+        //Set up view
         replyButton.imageView?.sizeToFit()
         reTweetButton.imageView?.sizeToFit()
         likeButton.imageView?.sizeToFit()
         profileImage.layer.cornerRadius = 9.0
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWasShown:"), name:UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWasHiden:"), name:UIKeyboardWillHideNotification, object: nil)
+        //Setup data
         originTweet = newTweet
+        
+        //Setup controller
+        replyTextView.delegate = self
         
         showDetailView()
         
-
+        
         // Do any additional setup after loading the view.
     }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        replyTextView.resignFirstResponder()
+    }
+    
+    func textViewDidBeginEditing(textView: UITextView) {
+        replyTextView.text = "@\((newTweet?.user?.name)!)"
+    }
+    
+    func keyboardWasShown(notification: NSNotification) {
+        var info = notification.userInfo!
+        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        
+        UIView.animateWithDuration(0.3, animations: { () -> Void in
+            self.replyViewBottomConstraint.constant = keyboardFrame.size.height
+        })
+    }
+    
+    func keyboardWasHiden(notification: NSNotification) {
+        
+        UIView.animateWithDuration(0.3, animations: { () -> Void in
+            self.replyViewBottomConstraint.constant = 0
+            
+        })
+    }
+    
     
     func showDetailView() {
         print("Q_debug: show detail view")
@@ -95,10 +116,10 @@ class DetailTweetViewController: UIViewController {
         
         if newTweet?.isRetweeted == true {
             reTweetButton.setImage(UIImage(named: "retweet-action-pressed"), forState: .Normal)
-
+            
         } else {
             reTweetButton.setImage(UIImage(named: "retweet-action-default"), forState: .Normal)
-
+            
         }
     }
     
@@ -121,7 +142,7 @@ class DetailTweetViewController: UIViewController {
         reTweetTopIcon.image = UIImage(named: "retweet-action-pressed")
         self.reTweetUserName.text = newTweet?.user?.name
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -132,10 +153,8 @@ class DetailTweetViewController: UIViewController {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        print("Q_debug: Segue to ComposeViewController")
         if segue.identifier == "ReplyNavigationSegue"
         {
-            print("Q_debug: Segue to ComposeViewController")
             if let destinationVC = segue.destinationViewController as? UINavigationController {
                 let tagetVC = destinationVC.topViewController as! ComposeViewController
                 tagetVC.replyTweet = self.newTweet
@@ -145,15 +164,20 @@ class DetailTweetViewController: UIViewController {
     
     
     @IBAction func onReply(sender: AnyObject) {
-//        let storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
-//        let controller = storyboard.instantiateViewControllerWithIdentifier("ComposeViewController") as! ComposeViewController
-//        controller.replyTweet = self.newTweet
-//        self.navigationController?.pushViewController(controller, animated: true)
+        replyTextView.endEditing(true)
+        replyTextView.text = ""
+//        replyTextView.becomeFirstResponder()
+        if let tweetContent = replyTextView.text {
+            TwitClient.sharedInstance.replyStatus(tweetContent, tweetId: (self.newTweet?.id)!, completion: { (tweet, error) -> () in
+                if error != nil {
+                    print("error post reply tweet: \(error)")
+                    return
+                }
+            })
+        }
     }
     
     @IBAction func onReTweet(sender: AnyObject) {
-        print("Q_debug: on retweet")
-        
         if newTweet?.isRetweeted == false {
             TwitClient.sharedInstance.retweet((newTweet?.id)!) { (tweet, error) -> () in
                 if tweet != nil {
@@ -180,7 +204,7 @@ class DetailTweetViewController: UIViewController {
                 }
             })
         }
-     
+        
     }
     
     @IBAction func onLike(sender: AnyObject) {
@@ -206,15 +230,15 @@ class DetailTweetViewController: UIViewController {
         
     }
     
-
+    
     /*
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    // Get the new view controller using segue.destinationViewController.
+    // Pass the selected object to the new view controller.
     }
     */
-
+    
 }

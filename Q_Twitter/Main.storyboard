@@ -107,7 +107,6 @@
                                 </constraints>
                                 <state key="normal" title="Reply"/>
                                 <connections>
-                                    <action selector="onReply:" destination="fcr-PL-gpU" eventType="touchUpInside" id="HOG-Gw-ReF"/>
                                     <segue destination="r5U-4B-t7E" kind="modal" identifier="ReplyNavigationSegue" id="19f-2s-WIt"/>
                                 </connections>
                             </button>
@@ -199,6 +198,9 @@
                                             <constraint firstAttribute="width" constant="39" id="FEd-es-YwA"/>
                                         </constraints>
                                         <state key="normal" title="Reply"/>
+                                        <connections>
+                                            <action selector="onReply:" destination="fcr-PL-gpU" eventType="touchUpInside" id="H47-6Z-jIB"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="140" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="77J-qW-QIk">
                                         <rect key="frame" x="0.0" y="13" width="35" height="21"/>
@@ -280,6 +282,10 @@
                         <outlet property="reTweetedLabel" destination="b6S-uT-Ok1" id="bfg-iP-CV1"/>
                         <outlet property="reTweetsCntLabel" destination="uEi-Vt-trG" id="M52-CU-3Je"/>
                         <outlet property="replyButton" destination="uNm-Eu-NRj" id="kHF-ye-lb2"/>
+                        <outlet property="replyCntLabel" destination="77J-qW-QIk" id="Ake-mn-Xh8"/>
+                        <outlet property="replyTexViewBottomConstraint" destination="lRf-sd-iEc" id="gfi-tv-Xt7"/>
+                        <outlet property="replyTextView" destination="SdC-hu-ygT" id="0Rv-Lr-6Ij"/>
+                        <outlet property="replyViewBottomConstraint" destination="OIF-ay-PIK" id="Uuz-oL-k4a"/>
                         <outlet property="tweetCreateDateLabel" destination="1YX-rf-ZJB" id="t83-df-H8l"/>
                         <outlet property="tweetTextLabel" destination="727-RF-E6j" id="KXx-W9-VrM"/>
                         <outlet property="userAccountLabel" destination="ARH-aK-gUB" id="1ng-P5-JGY"/>
